@@ -1,0 +1,21 @@
+--- Architecture Review ---
+
+
+main.cpp
+    │
+    ▼
+NetlistParser
+    │
+    ▼
+Graph
+    │
+    ├──► GraphAnalyzer
+    │
+    ▼
+PlacementEngine
+    │
+    ▼
+RoutingEngine
+    │
+    ▼
+SvgExporter
