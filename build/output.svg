@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="824" height="1224">
+  <rect width="100%" height="100%" fill="white"/>
+  <line x1="640" y1="1160" x2="200" y2="1160" stroke="gray" stroke-width="2"/>
+  <line x1="200" y1="1160" x2="200" y2="1000" stroke="gray" stroke-width="2"/>
+  <line x1="640" y1="1160" x2="760" y2="1160" stroke="gray" stroke-width="2"/>
+  <line x1="760" y1="1160" x2="760" y2="680" stroke="gray" stroke-width="2"/>
+  <line x1="200" y1="1000" x2="280" y2="1000" stroke="gray" stroke-width="2"/>
+  <line x1="280" y1="1000" x2="280" y2="480" stroke="gray" stroke-width="2"/>
+  <line x1="760" y1="680" x2="280" y2="680" stroke="gray" stroke-width="2"/>
+  <line x1="280" y1="680" x2="280" y2="480" stroke="gray" stroke-width="2"/>
+  <line x1="280" y1="480" x2="40" y2="480" stroke="gray" stroke-width="2"/>
+  <line x1="40" y1="480" x2="40" y2="40" stroke="gray" stroke-width="2"/>
+  <circle cx="640" cy="1160" r="12" fill="lightblue" stroke="black"/>
+  <text x="640" y="1164" text-anchor="middle" font-size="12">A</text>
+  <circle cx="200" cy="1000" r="12" fill="lightblue" stroke="black"/>
+  <text x="200" y="1004" text-anchor="middle" font-size="12">B</text>
+  <circle cx="760" cy="680" r="12" fill="lightblue" stroke="black"/>
+  <text x="760" y="684" text-anchor="middle" font-size="12">C</text>
+  <circle cx="280" cy="480" r="12" fill="lightblue" stroke="black"/>
+  <text x="280" y="484" text-anchor="middle" font-size="12">D</text>
+  <circle cx="40" cy="40" r="12" fill="lightblue" stroke="black"/>
+  <text x="40" y="44" text-anchor="middle" font-size="12">E</text>
+</svg>

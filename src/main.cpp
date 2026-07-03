@@ -1,25 +1,33 @@
-#include "Netlist.h"
-#include "Graph.h"
-#include "Placement.h"
-#include "Routing.h"
-#include "Visualization.h"
+#include "parser/NetlistParser.h"
+#include "models/Graph.h"
+#include "analyzer/GraphAnalyzer.h"
+#include "placement/PlacementEngine.h"
+#include "routing/RoutingEngine.h"
+#include "visualization/SvgExporter.h"
 
-int main() {
-
+int main()
+{
     Graph graph;
 
-    readNetlist("netlist.txt", graph);
+    NetlistParser parser;
+    if (!parser.parse("netlist.txt", graph))
+        return 1;
 
     graph.print();
 
-    Placement placement(graph);
+    GraphAnalyzer analyzer(graph);
+    const Analysis analysis = analyzer.analyzeFromFirstNode();
+    analyzer.printAnalysis(analysis);
+
+    PlacementEngine placement(graph);
     placement.placeComponents();
 
-    Routing routing(graph, placement);
+    RoutingEngine routing(graph, placement);
     routing.routeConnections();
 
-    Visualization visual(graph, placement);
-    visual.display();
+    SvgExporter exporter(graph, placement, routing);
+    exporter.display();
+    exporter.exportToFile("output.svg");
 
     return 0;
 }
