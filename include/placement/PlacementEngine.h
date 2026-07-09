@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "models/Edge.h"
 #include "models/Graph.h"
 #include "models/Position.h"
 
@@ -12,6 +13,7 @@ class PlacementEngine
 {
 public:
     std::map<std::string, Position> locations;
+    std::vector<Edge> spanningTree;
 
     explicit PlacementEngine(Graph &graph);
 
@@ -19,10 +21,12 @@ public:
 
 private:
     Graph &graph;
+    static constexpr int gridUnit = 2;
 
-    std::vector<std::string> collectNodes() const;
-    void forceDirectedPlacement(const std::vector<std::string> &nodes);
-    void resolveOverlaps(const std::vector<std::string> &nodes, int gridUnit);
+    std::string selectRootNode() const;
+    std::map<std::string, std::vector<std::string>> buildUndirectedAdjacency() const;
+    std::map<std::string, int> computeLayers(const std::string &root);
+    void placeByLayers(const std::map<std::string, int> &layers);
 };
 
 #endif
