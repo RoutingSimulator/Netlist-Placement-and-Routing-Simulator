@@ -1,16 +1,17 @@
 #include "placement/PlacementEngine.h"
 
 #include <algorithm>
-#include <cmath>
+#include <queue>
 #include <set>
 
 PlacementEngine::PlacementEngine(Graph &graph) : graph(graph) {}
 
 void PlacementEngine::placeComponents()
 {
-    const auto nodes = collectNodes();
     locations.clear();
+    spanningTree.clear();
 
+    const std::vector<std::string> nodes = graph.getNodes();
     if (nodes.empty())
         return;
 
@@ -20,146 +21,109 @@ void PlacementEngine::placeComponents()
         return;
     }
 
-    forceDirectedPlacement(nodes);
+    const std::string root = selectRootNode();
+    const std::map<std::string, int> layers = computeLayers(root);
+    placeByLayers(layers);
 }
 
-std::vector<std::string> PlacementEngine::collectNodes() const
+std::string PlacementEngine::selectRootNode() const
 {
-    std::set<std::string> nodeSet;
+    const std::vector<std::string> nodes = graph.getNodes();
+    return nodes.front();
+}
+
+std::map<std::string, std::vector<std::string>> PlacementEngine::buildUndirectedAdjacency() const
+{
+    std::map<std::string, std::set<std::string>> neighborSets;
 
     for (const auto &entry : graph.adjacencyList)
     {
-        nodeSet.insert(entry.first);
+        neighborSets[entry.first];
         for (const auto &neighbor : entry.second)
-            nodeSet.insert(neighbor);
+        {
+            neighborSets[entry.first].insert(neighbor);
+            neighborSets[neighbor].insert(entry.first);
+        }
     }
 
-    return {nodeSet.begin(), nodeSet.end()};
+    std::map<std::string, std::vector<std::string>> undirected;
+    for (const auto &entry : neighborSets)
+        undirected[entry.first] = {entry.second.begin(), entry.second.end()};
+
+    return undirected;
 }
 
-void PlacementEngine::forceDirectedPlacement(const std::vector<std::string> &nodes)
+std::map<std::string, int> PlacementEngine::computeLayers(const std::string &root)
 {
-    const int iterations = 200;
-    const double repulsion = 500.0;
-    const double attraction = 0.05;
-    const double damping = 0.85;
-    const int gridUnit = 2;
+    const auto undirected = buildUndirectedAdjacency();
+    std::map<std::string, int> layers;
+    std::set<std::string> visited;
+    int nextComponentBase = 0;
 
-    std::map<std::string, double> posX;
-    std::map<std::string, double> posY;
-    std::map<std::string, double> velX;
-    std::map<std::string, double> velY;
-
-    const double radius = nodes.size() * gridUnit * 2.0;
-    for (size_t i = 0; i < nodes.size(); ++i)
+    auto bfsFrom = [&](const std::string &startNode)
     {
-        const double angle = 2.0 * M_PI * static_cast<double>(i) / nodes.size();
-        posX[nodes[i]] = radius * std::cos(angle);
-        posY[nodes[i]] = radius * std::sin(angle);
-        velX[nodes[i]] = 0.0;
-        velY[nodes[i]] = 0.0;
-    }
+        std::queue<std::string> queue;
+        visited.insert(startNode);
+        layers[startNode] = nextComponentBase;
+        queue.push(startNode);
 
-    for (int iter = 0; iter < iterations; ++iter)
-    {
-        std::map<std::string, double> forceX;
-        std::map<std::string, double> forceY;
-
-        for (const auto &node : nodes)
+        while (!queue.empty())
         {
-            forceX[node] = 0.0;
-            forceY[node] = 0.0;
-        }
+            const std::string current = queue.front();
+            queue.pop();
 
-        for (size_t i = 0; i < nodes.size(); ++i)
-        {
-            for (size_t j = i + 1; j < nodes.size(); ++j)
+            const auto adjacencyIt = undirected.find(current);
+            if (adjacencyIt == undirected.end())
+                continue;
+
+            for (const auto &neighbor : adjacencyIt->second)
             {
-                double dx = posX[nodes[i]] - posX[nodes[j]];
-                double dy = posY[nodes[i]] - posY[nodes[j]];
-                double dist = std::sqrt(dx * dx + dy * dy);
-                if (dist < 0.01)
-                    dist = 0.01;
+                if (visited.count(neighbor))
+                    continue;
 
-                const double force = repulsion / (dist * dist);
-                const double fx = force * dx / dist;
-                const double fy = force * dy / dist;
-
-                forceX[nodes[i]] += fx;
-                forceY[nodes[i]] += fy;
-                forceX[nodes[j]] -= fx;
-                forceY[nodes[j]] -= fy;
+                visited.insert(neighbor);
+                layers[neighbor] = layers[current] + 1;
+                spanningTree.push_back({current, neighbor});
+                queue.push(neighbor);
             }
         }
 
-        for (const auto &entry : graph.adjacencyList)
-        {
-            const std::string &from = entry.first;
-            for (const auto &to : entry.second)
-            {
-                double dx = posX[to] - posX[from];
-                double dy = posY[to] - posY[from];
-                double dist = std::sqrt(dx * dx + dy * dy);
-                if (dist < 0.01)
-                    dist = 0.01;
+        int maxLayer = nextComponentBase;
+        for (const auto &entry : layers)
+            maxLayer = std::max(maxLayer, entry.second);
 
-                const double force = attraction * dist;
-                const double fx = force * dx / dist;
-                const double fy = force * dy / dist;
+        nextComponentBase = maxLayer + 1;
+    };
 
-                forceX[from] += fx;
-                forceY[from] += fy;
-                forceX[to] -= fx;
-                forceY[to] -= fy;
-            }
-        }
+    bfsFrom(root);
 
-        for (const auto &node : nodes)
-        {
-            velX[node] = (velX[node] + forceX[node]) * damping;
-            velY[node] = (velY[node] + forceY[node]) * damping;
-            posX[node] += velX[node];
-            posY[node] += velY[node];
-        }
-    }
-
-    double minX = posX[nodes.front()];
-    double minY = posY[nodes.front()];
-    for (const auto &node : nodes)
+    for (const auto &node : graph.getNodes())
     {
-        minX = std::min(minX, posX[node]);
-        minY = std::min(minY, posY[node]);
+        if (!visited.count(node))
+            bfsFrom(node);
     }
 
-    for (const auto &node : nodes)
-    {
-        const int x = static_cast<int>(std::lround((posX[node] - minX) / gridUnit)) * gridUnit;
-        const int y = static_cast<int>(std::lround((posY[node] - minY) / gridUnit)) * gridUnit;
-        locations[node] = {x, y};
-    }
-
-    resolveOverlaps(nodes, gridUnit);
+    return layers;
 }
 
-void PlacementEngine::resolveOverlaps(const std::vector<std::string> &nodes, int gridUnit)
+void PlacementEngine::placeByLayers(const std::map<std::string, int> &layers)
 {
-    bool adjusted = true;
-    while (adjusted)
-    {
-        adjusted = false;
-        for (size_t i = 0; i < nodes.size(); ++i)
-        {
-            for (size_t j = i + 1; j < nodes.size(); ++j)
-            {
-                const Position &a = locations[nodes[i]];
-                const Position &b = locations[nodes[j]];
+    std::map<int, std::vector<std::string>> nodesByLayer;
 
-                if (a.x == b.x && a.y == b.y)
-                {
-                    locations[nodes[j]].x += gridUnit;
-                    adjusted = true;
-                }
-            }
+    for (const auto &entry : layers)
+        nodesByLayer[entry.second].push_back(entry.first);
+
+    for (auto &entry : nodesByLayer)
+    {
+        std::sort(entry.second.begin(), entry.second.end());
+
+        const int level = entry.first;
+        const int x = level * gridUnit;
+
+        for (size_t i = 0; i < entry.second.size(); ++i)
+        {
+            const int y = static_cast<int>(i) * gridUnit;
+            locations[entry.second[i]] = {x, y};
         }
     }
 }
