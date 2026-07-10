@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <set>
-#include <utility>
 
 void Graph::addNode(const std::string &id)
 {
@@ -14,7 +13,6 @@ void Graph::addEdge(const std::string &from, const std::string &to)
     addNode(from);
     addNode(to);
     adjacencyList[from].push_back(to);
-    adjacencyList[to].push_back(from);
 }
 
 std::vector<std::string> Graph::getNodes() const
@@ -34,18 +32,12 @@ std::vector<std::string> Graph::getNodes() const
 std::vector<Edge> Graph::getEdges() const
 {
     std::vector<Edge> edges;
-    std::set<std::pair<std::string, std::string>> seen;
 
-    for (const auto &entry : adjacencyList)
+    for (const auto &[from, neighbors] : adjacencyList)
     {
-        for (const auto &to : entry.second)
+        for (const auto &to : neighbors)
         {
-            const auto key = entry.first < to
-                ? std::make_pair(entry.first, to)
-                : std::make_pair(to, entry.first);
-
-            if (seen.insert(key).second)
-                edges.push_back({entry.first, to});
+            edges.push_back({from, to});
         }
     }
 
@@ -61,6 +53,6 @@ void Graph::print() const
         for (const auto &neighbor : entry.second)
             std::cout << neighbor << " ";
 
-        std::cout << std::endl;
+        std::cout << '\n';
     }
 }
