@@ -3,9 +3,14 @@
 #include <cmath>
 #include <iostream>
 
-RoutingEngine::RoutingEngine(Graph &graph, PlacementEngine &placement)
+RoutingEngine::RoutingEngine(const Graph &graph, const PlacementEngine &placement)
     : graph(graph), placement(placement)
 {
+}
+
+const std::vector<Route> &RoutingEngine::getRoutes() const
+{
+    return routes;
 }
 
 void RoutingEngine::routeConnections()
@@ -43,8 +48,8 @@ Route RoutingEngine::routeEdge(const std::string &from, const std::string &to) c
     route.from = from;
     route.to = to;
 
-    const Position start = placement.locations.at(from);
-    const Position end = placement.locations.at(to);
+    const Position start = placement.getLocations().at(from);
+    const Position end = placement.getLocations().at(to);
 
     route.waypoints.push_back(start);
 

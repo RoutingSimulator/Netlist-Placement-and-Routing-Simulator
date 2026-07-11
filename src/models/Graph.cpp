@@ -29,6 +29,11 @@ std::vector<std::string> Graph::getNodes() const
     return {nodeSet.begin(), nodeSet.end()};
 }
 
+const std::map<std::string, std::vector<std::string>> &Graph::getAdjacencyList() const
+{
+    return adjacencyList;
+}
+
 std::vector<Edge> Graph::getEdges() const
 {
     std::vector<Edge> edges;

@@ -6,9 +6,9 @@
 #include <set>
 #include <stack>
 
-GraphAnalyzer::GraphAnalyzer(Graph &graph) : graph(graph) {}
+GraphAnalyzer::GraphAnalyzer(const Graph &graph) : graph(graph) {}
 
-Analysis GraphAnalyzer::analyze(const std::string &startNode)
+Analysis GraphAnalyzer::analyze(const std::string &startNode) const
 {
     Analysis analysis;
     analysis.startNode = startNode;
@@ -27,8 +27,8 @@ Analysis GraphAnalyzer::analyze(const std::string &startNode)
         const std::string current = queue.front();
         queue.pop();
 
-        const auto it = graph.adjacencyList.find(current);
-        if (it == graph.adjacencyList.end())
+        const auto it = graph.getAdjacencyList().find(current);
+        if (it == graph.getAdjacencyList().end())
             continue;
 
         for (const auto &neighbor : it->second)
@@ -45,7 +45,7 @@ Analysis GraphAnalyzer::analyze(const std::string &startNode)
     return analysis;
 }
 
-Analysis GraphAnalyzer::analyzeFromFirstNode()
+Analysis GraphAnalyzer::analyzeFromFirstNode() const
 {
     const auto nodes = graph.getNodes();
     if (nodes.empty())
@@ -73,7 +73,7 @@ void GraphAnalyzer::printAnalysis(const Analysis &analysis) const
         std::cout << "  " << entry.first << " -> level " << entry.second << std::endl;
 }
 
-std::vector<std::string> GraphAnalyzer::bfs(const std::string &start)
+std::vector<std::string> GraphAnalyzer::bfs(const std::string &start) const
 {
     std::vector<std::string> order;
     std::map<std::string, bool> visited;
@@ -88,8 +88,8 @@ std::vector<std::string> GraphAnalyzer::bfs(const std::string &start)
         queue.pop();
         order.push_back(current);
 
-        const auto it = graph.adjacencyList.find(current);
-        if (it == graph.adjacencyList.end())
+        const auto it = graph.getAdjacencyList().find(current);
+        if (it == graph.getAdjacencyList().end())
             continue;
 
         for (const auto &neighbor : it->second)
@@ -105,7 +105,7 @@ std::vector<std::string> GraphAnalyzer::bfs(const std::string &start)
     return order;
 }
 
-std::vector<std::string> GraphAnalyzer::dfs(const std::string &start)
+std::vector<std::string> GraphAnalyzer::dfs(const std::string &start) const
 {
     std::vector<std::string> order;
     std::set<std::string> visited;
@@ -124,8 +124,8 @@ std::vector<std::string> GraphAnalyzer::dfs(const std::string &start)
         visited.insert(current);
         order.push_back(current);
 
-        const auto it = graph.adjacencyList.find(current);
-        if (it == graph.adjacencyList.end())
+        const auto it = graph.getAdjacencyList().find(current);
+        if (it == graph.getAdjacencyList().end())
             continue;
 
         for (auto neighbor = it->second.rbegin(); neighbor != it->second.rend(); ++neighbor)

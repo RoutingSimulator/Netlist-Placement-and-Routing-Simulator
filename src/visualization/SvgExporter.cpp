@@ -11,7 +11,7 @@ constexpr int kPadding = 40;
 constexpr int kNodeRadius = 12;
 }
 
-SvgExporter::SvgExporter(Graph &graph, PlacementEngine &placement, RoutingEngine &routing)
+SvgExporter::SvgExporter(const Graph &graph, const PlacementEngine &placement, const RoutingEngine &routing)
     : graph(graph), placement(placement), routing(routing)
 {
 }
@@ -19,7 +19,7 @@ SvgExporter::SvgExporter(Graph &graph, PlacementEngine &placement, RoutingEngine
 void SvgExporter::display() const
 {
     std::cout << "Placement:" << std::endl;
-    for (const auto &entry : placement.locations)
+    for (const auto &entry : placement.getLocations())
         std::cout << "  " << entry.first << " -> (" << entry.second.x << ", " << entry.second.y << ")" << std::endl;
 
     routing.printRoutes();
@@ -30,7 +30,7 @@ bool SvgExporter::exportToFile(const std::string &filename) const
     int maxX = 0;
     int maxY = 0;
 
-    for (const auto &entry : placement.locations)
+    for (const auto &entry : placement.getLocations())
     {
         maxX = std::max(maxX, entry.second.x);
         maxY = std::max(maxY, entry.second.y);
@@ -50,7 +50,7 @@ bool SvgExporter::exportToFile(const std::string &filename) const
          << "\" height=\"" << height << "\">\n";
     file << "  <rect width=\"100%\" height=\"100%\" fill=\"white\"/>\n";
 
-    for (const auto &route : routing.routes)
+    for (const auto &route : routing.getRoutes())
     {
         for (size_t i = 1; i < route.waypoints.size(); ++i)
         {
@@ -67,7 +67,7 @@ bool SvgExporter::exportToFile(const std::string &filename) const
         }
     }
 
-    for (const auto &entry : placement.locations)
+    for (const auto &entry : placement.getLocations())
     {
         const int cx = kPadding + entry.second.x * kScale;
         const int cy = kPadding + entry.second.y * kScale;

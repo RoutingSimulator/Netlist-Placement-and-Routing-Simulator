@@ -4,7 +4,17 @@
 #include <queue>
 #include <set>
 
-PlacementEngine::PlacementEngine(Graph &graph) : graph(graph) {}
+PlacementEngine::PlacementEngine(const Graph &graph) : graph(graph) {}
+
+const std::map<std::string, Position> &PlacementEngine::getLocations() const
+{
+    return locations;
+}
+
+const std::vector<Edge> &PlacementEngine::getSpanningTree() const
+{
+    return spanningTree;
+}
 
 void PlacementEngine::placeComponents()
 {
@@ -36,7 +46,7 @@ std::map<std::string, std::vector<std::string>> PlacementEngine::buildUndirected
 {
     std::map<std::string, std::set<std::string>> neighborSets;
 
-    for (const auto &entry : graph.adjacencyList)
+    for (const auto &entry : graph.getAdjacencyList())
     {
         neighborSets[entry.first];
         for (const auto &neighbor : entry.second)
