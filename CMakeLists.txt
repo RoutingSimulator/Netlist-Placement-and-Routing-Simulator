@@ -17,4 +17,16 @@ add_executable(NetlistPlacementRoutingSimulator
     src/visualization/SvgExporter.cpp
 )
 
-file(COPY netlist.txt DESTINATION ${CMAKE_BINARY_DIR})
+set(NETLIST_OUTPUT ${CMAKE_BINARY_DIR}/netlist.txt)
+
+add_custom_command(
+    OUTPUT ${NETLIST_OUTPUT}
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/netlist.txt
+        ${NETLIST_OUTPUT}
+    DEPENDS ${CMAKE_SOURCE_DIR}/netlist.txt
+    COMMENT "Copying netlist.txt to build directory"
+)
+
+add_custom_target(copy_netlist ALL DEPENDS ${NETLIST_OUTPUT})
+add_dependencies(NetlistPlacementRoutingSimulator copy_netlist)
