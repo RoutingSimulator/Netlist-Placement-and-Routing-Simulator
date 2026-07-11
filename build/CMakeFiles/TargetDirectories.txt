@@ -1,3 +1,0 @@
-/home/karlen/Team1Simulator/build/CMakeFiles/NetlistPlacementRoutingSimulator.dir
-/home/karlen/Team1Simulator/build/CMakeFiles/edit_cache.dir
-/home/karlen/Team1Simulator/build/CMakeFiles/rebuild_cache.dir
