@@ -10,16 +10,16 @@
 class RoutingEngine
 {
 public:
-    std::vector<Route> routes;
-
-    RoutingEngine(Graph &graph, PlacementEngine &placement);
+    RoutingEngine(const Graph &graph, const PlacementEngine &placement);
 
     void routeConnections();
     void printRoutes() const;
+    const std::vector<Route> &getRoutes() const;
 
 private:
-    Graph &graph;
-    PlacementEngine &placement;
+    const Graph &graph;
+    const PlacementEngine &placement;
+    std::vector<Route> routes;
 
     Route routeEdge(const std::string &from, const std::string &to) const;
 };

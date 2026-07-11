@@ -9,17 +9,17 @@
 class GraphAnalyzer
 {
 public:
-    explicit GraphAnalyzer(Graph &graph);
+    explicit GraphAnalyzer(const Graph &graph);
 
-    Analysis analyze(const std::string &startNode);
-    Analysis analyzeFromFirstNode();
+    Analysis analyze(const std::string &startNode) const;
+    Analysis analyzeFromFirstNode() const;
     void printAnalysis(const Analysis &analysis) const;
 
 private:
-    Graph &graph;
+    const Graph &graph;
 
-    std::vector<std::string> bfs(const std::string &start);
-    std::vector<std::string> dfs(const std::string &start);
+    std::vector<std::string> bfs(const std::string &start) const;
+    std::vector<std::string> dfs(const std::string &start) const;
 };
 
 #endif

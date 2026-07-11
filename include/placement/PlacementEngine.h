@@ -12,15 +12,16 @@
 class PlacementEngine
 {
 public:
-    std::map<std::string, Position> locations;
-    std::vector<Edge> spanningTree;
-
-    explicit PlacementEngine(Graph &graph);
+    explicit PlacementEngine(const Graph &graph);
 
     void placeComponents();
+    const std::map<std::string, Position> &getLocations() const;
+    const std::vector<Edge> &getSpanningTree() const;
 
 private:
-    Graph &graph;
+    const Graph &graph;
+    std::map<std::string, Position> locations;
+    std::vector<Edge> spanningTree;
     static constexpr int gridUnit = 2;
 
     std::string selectRootNode() const;

@@ -10,15 +10,15 @@
 class SvgExporter
 {
 public:
-    SvgExporter(Graph &graph, PlacementEngine &placement, RoutingEngine &routing);
+    SvgExporter(const Graph &graph, const PlacementEngine &placement, const RoutingEngine &routing);
 
     void display() const;
     bool exportToFile(const std::string &filename) const;
 
 private:
-    Graph &graph;
-    PlacementEngine &placement;
-    RoutingEngine &routing;
+    const Graph &graph;
+    const PlacementEngine &placement;
+    const RoutingEngine &routing;
 };
 
 #endif
