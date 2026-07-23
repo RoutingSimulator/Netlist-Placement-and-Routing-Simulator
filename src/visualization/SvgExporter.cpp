@@ -1,15 +1,23 @@
 #include "visualization/SvgExporter.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 namespace
 {
 constexpr int kScale = 20;
 constexpr int kPadding = 40;
 constexpr int kNodeRadius = 12;
+
+void openInUbuntuViewer(const std::string &filename)
+{
+    std::string command = "xdg-open \"" + filename + "\" > /dev/null 2>&1 &";
+    std::system(command.c_str());
 }
+} 
 
 SvgExporter::SvgExporter(const Graph &graph, const PlacementEngine &placement, const RoutingEngine &routing)
     : graph(graph), placement(placement), routing(routing)
@@ -82,5 +90,8 @@ bool SvgExporter::exportToFile(const std::string &filename) const
     file.close();
 
     std::cout << "SVG exported to " << filename << std::endl;
+
+    openInUbuntuViewer(filename);
+
     return true;
 }
