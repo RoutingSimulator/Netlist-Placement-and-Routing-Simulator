@@ -1,10 +1,9 @@
 #include "analyzer/GraphAnalyzer.h"
 
 #include <iostream>
-#include <map>
 #include <queue>
-#include <set>
 #include <stack>
+#include <unordered_set>
 
 GraphAnalyzer::GraphAnalyzer(const Graph &graph) : graph(graph) {}
 
@@ -12,35 +11,10 @@ Analysis GraphAnalyzer::analyze(const std::string &startNode) const
 {
     Analysis analysis;
     analysis.startNode = startNode;
-    analysis.bfsOrder = bfs(startNode);
+
+    bfs(startNode, analysis.bfsOrder, analysis.bfsLevels);
+
     analysis.dfsOrder = dfs(startNode);
-
-    std::map<std::string, bool> visited;
-    std::queue<std::string> queue;
-
-    visited[startNode] = true;
-    queue.push(startNode);
-    analysis.bfsLevels[startNode] = 0;
-
-    while (!queue.empty())
-    {
-        const std::string current = queue.front();
-        queue.pop();
-
-        const auto it = graph.getAdjacencyList().find(current);
-        if (it == graph.getAdjacencyList().end())
-            continue;
-
-        for (const auto &neighbor : it->second)
-        {
-            if (visited[neighbor])
-                continue;
-
-            visited[neighbor] = true;
-            analysis.bfsLevels[neighbor] = analysis.bfsLevels[current] + 1;
-            queue.push(neighbor);
-        }
-    }
 
     return analysis;
 }
@@ -73,13 +47,18 @@ void GraphAnalyzer::printAnalysis(const Analysis &analysis) const
         std::cout << "  " << entry.first << " -> level " << entry.second << std::endl;
 }
 
-std::vector<std::string> GraphAnalyzer::bfs(const std::string &start) const
+void GraphAnalyzer::bfs(const std::string &start,
+                        std::vector<std::string> &order,
+                        std::map<std::string, int> &levels) const
 {
-    std::vector<std::string> order;
-    std::map<std::string, bool> visited;
+    order.clear();
+    levels.clear();
+
+    std::unordered_set<std::string> visited;
     std::queue<std::string> queue;
 
-    visited[start] = true;
+    visited.insert(start);
+    levels[start] = 0;
     queue.push(start);
 
     while (!queue.empty())
@@ -94,21 +73,20 @@ std::vector<std::string> GraphAnalyzer::bfs(const std::string &start) const
 
         for (const auto &neighbor : it->second)
         {
-            if (visited[neighbor])
+            if (visited.count(neighbor))
                 continue;
 
-            visited[neighbor] = true;
+            visited.insert(neighbor);
+            levels[neighbor] = levels[current] + 1;
             queue.push(neighbor);
         }
     }
-
-    return order;
 }
 
 std::vector<std::string> GraphAnalyzer::dfs(const std::string &start) const
 {
     std::vector<std::string> order;
-    std::set<std::string> visited;
+    std::unordered_set<std::string> visited;
     std::stack<std::string> stack;
 
     stack.push(start);
