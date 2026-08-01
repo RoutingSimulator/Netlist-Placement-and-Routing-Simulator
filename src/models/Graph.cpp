@@ -1,7 +1,6 @@
 #include "models/Graph.h"
 
 #include <iostream>
-#include <set>
 
 void Graph::addNode(const std::string &id)
 {
@@ -17,16 +16,15 @@ void Graph::addEdge(const std::string &from, const std::string &to)
 
 std::vector<std::string> Graph::getNodes() const
 {
-    std::set<std::string> nodeSet;
+    std::vector<std::string> nodesList;
+    nodesList.reserve(adjacencyList.size()); 
 
     for (const auto &entry : adjacencyList)
     {
-        nodeSet.insert(entry.first);
-        for (const auto &neighbor : entry.second)
-            nodeSet.insert(neighbor);
+        nodesList.push_back(entry.first);
     }
 
-    return {nodeSet.begin(), nodeSet.end()};
+    return nodesList;
 }
 
 const std::map<std::string, std::vector<std::string>> &Graph::getAdjacencyList() const
