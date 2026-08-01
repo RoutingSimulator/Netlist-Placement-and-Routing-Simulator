@@ -1,7 +1,9 @@
 #ifndef GRAPH_ANALYZER_H
 #define GRAPH_ANALYZER_H
 
+#include <map>
 #include <string>
+#include <vector>
 
 #include "models/Analysis.h"
 #include "models/Graph.h"
@@ -18,8 +20,11 @@ public:
 private:
     const Graph &graph;
 
-    std::vector<std::string> bfs(const std::string &start) const;
+    void bfs(const std::string &start,
+             std::vector<std::string> &order,
+             std::map<std::string, int> &levels) const;
+
     std::vector<std::string> dfs(const std::string &start) const;
 };
 
-#endif
+#endif 
