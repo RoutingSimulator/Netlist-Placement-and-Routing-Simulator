@@ -6,40 +6,35 @@
 #include <iostream>
 #include <string>
 
-namespace
-{
+namespace {
 constexpr int kScale = 20;
 constexpr int kPadding = 40;
 constexpr int kNodeRadius = 12;
 
-void openInUbuntuViewer(const std::string &filename)
-{
+void openInUbuntuViewer(const std::string &filename) {
     std::string command = "xdg-open \"" + filename + "\" > /dev/null 2>&1 &";
     std::system(command.c_str());
 }
 } 
 
 SvgExporter::SvgExporter(const Graph &graph, const PlacementEngine &placement, const RoutingEngine &routing)
-    : graph(graph), placement(placement), routing(routing)
-{
+    : graph(graph), placement(placement), routing(routing) {
 }
 
-void SvgExporter::display() const
-{
+void SvgExporter::display() const {
     std::cout << "Placement:" << std::endl;
-    for (const auto &entry : placement.getLocations())
+    for (const auto &entry : placement.getLocations()) {
         std::cout << "  " << entry.first << " -> (" << entry.second.x << ", " << entry.second.y << ")" << std::endl;
+    }
 
     routing.printRoutes();
 }
 
-bool SvgExporter::exportToFile(const std::string &filename) const
-{
+bool SvgExporter::exportToFile(const std::string &filename) const {
     int maxX = 0;
     int maxY = 0;
 
-    for (const auto &entry : placement.getLocations())
-    {
+    for (const auto &entry : placement.getLocations()) {
         maxX = std::max(maxX, entry.second.x);
         maxY = std::max(maxY, entry.second.y);
     }
@@ -48,8 +43,7 @@ bool SvgExporter::exportToFile(const std::string &filename) const
     const int height = maxY * kScale + kPadding * 2 + kNodeRadius * 2;
 
     std::ofstream file(filename);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         std::cerr << "Failed to write SVG file: " << filename << std::endl;
         return false;
     }
@@ -58,10 +52,8 @@ bool SvgExporter::exportToFile(const std::string &filename) const
          << "\" height=\"" << height << "\">\n";
     file << "  <rect width=\"100%\" height=\"100%\" fill=\"white\"/>\n";
 
-    for (const auto &route : routing.getRoutes())
-    {
-        for (size_t i = 1; i < route.waypoints.size(); ++i)
-        {
+    for (const auto &route : routing.getRoutes()) {
+        for (size_t i = 1; i < route.waypoints.size(); ++i) {
             const Position &a = route.waypoints[i - 1];
             const Position &b = route.waypoints[i];
             const int x1 = kPadding + a.x * kScale;
@@ -75,8 +67,7 @@ bool SvgExporter::exportToFile(const std::string &filename) const
         }
     }
 
-    for (const auto &entry : placement.getLocations())
-    {
+    for (const auto &entry : placement.getLocations()) {
         const int cx = kPadding + entry.second.x * kScale;
         const int cy = kPadding + entry.second.y * kScale;
 
