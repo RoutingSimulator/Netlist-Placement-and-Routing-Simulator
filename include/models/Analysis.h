@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 
-struct Analysis
-{
+struct Analysis {
     std::string startNode;
     std::vector<std::string> bfsOrder;
     std::vector<std::string> dfsOrder;

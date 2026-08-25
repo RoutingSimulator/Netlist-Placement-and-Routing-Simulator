@@ -7,8 +7,7 @@
 #include "placement/PlacementEngine.h"
 #include "routing/RoutingEngine.h"
 
-class SvgExporter
-{
+class SvgExporter {
 public:
     SvgExporter(const Graph &graph, const PlacementEngine &placement, const RoutingEngine &routing);
 

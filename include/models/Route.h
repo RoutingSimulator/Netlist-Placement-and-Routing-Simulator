@@ -6,8 +6,7 @@
 
 #include "models/Position.h"
 
-struct Route
-{
+struct Route {
     std::string from;
     std::string to;
     std::vector<Position> waypoints;
