@@ -145,6 +145,3 @@ A D
 - Routing treats other placed components as obstacles, tracks used waypoint cells to reduce overlap, and falls back to a direct segment when no path is found.
 - Route paths are simplified to corner waypoints before export.
 
-## License
-
-See repository settings for license information.
