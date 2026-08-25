@@ -7,8 +7,7 @@
 #include "models/Route.h"
 #include "placement/PlacementEngine.h"
 
-class RoutingEngine
-{
+class RoutingEngine {
 public:
     RoutingEngine(const Graph &graph, const PlacementEngine &placement);
 

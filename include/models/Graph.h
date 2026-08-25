@@ -7,8 +7,7 @@
 
 #include "models/Edge.h"
 
-class Graph
-{
+class Graph {
 public:
     void addNode(const std::string &id);
     void addEdge(const std::string &from, const std::string &to);

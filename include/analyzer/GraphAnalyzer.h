@@ -8,8 +8,7 @@
 #include "models/Analysis.h"
 #include "models/Graph.h"
 
-class GraphAnalyzer
-{
+class GraphAnalyzer {
 public:
     explicit GraphAnalyzer(const Graph &graph);
 

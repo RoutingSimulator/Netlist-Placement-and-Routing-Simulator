@@ -5,13 +5,13 @@
 #include "routing/RoutingEngine.h"
 #include "visualization/SvgExporter.h"
 
-int main()
-{
+int main() {
     Graph graph;
 
     NetlistParser parser;
-    if (!parser.parse("netlist.txt", graph))
+    if (!parser.parse("netlist.txt", graph)) {
         return 1;
+    }
 
     graph.print();
 

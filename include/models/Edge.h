@@ -3,8 +3,7 @@
 
 #include <string>
 
-struct Edge
-{
+struct Edge {
     std::string from;
     std::string to;
 };

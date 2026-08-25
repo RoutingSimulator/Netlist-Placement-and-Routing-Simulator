@@ -9,8 +9,7 @@
 #include "models/Graph.h"
 #include "models/Position.h"
 
-class PlacementEngine
-{
+class PlacementEngine {
 public:
     explicit PlacementEngine(const Graph &graph);
 

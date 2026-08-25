@@ -3,8 +3,7 @@
 
 #include <string>
 
-struct Node
-{
+struct Node {
     std::string id;
 };
 

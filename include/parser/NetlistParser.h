@@ -5,8 +5,7 @@
 
 #include "models/Graph.h"
 
-class NetlistParser
-{
+class NetlistParser {
 public:
     bool parse(const std::string &filename, Graph &graph);
 };

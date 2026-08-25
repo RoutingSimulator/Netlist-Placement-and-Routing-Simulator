@@ -2,44 +2,36 @@
 
 #include <iostream>
 
-void Graph::addNode(const std::string &id)
-{
+void Graph::addNode(const std::string &id) {
     adjacencyList[id];
 }
 
-void Graph::addEdge(const std::string &from, const std::string &to)
-{
+void Graph::addEdge(const std::string &from, const std::string &to) {
     addNode(from);
     addNode(to);
     adjacencyList[from].push_back(to);
 }
 
-std::vector<std::string> Graph::getNodes() const
-{
+std::vector<std::string> Graph::getNodes() const {
     std::vector<std::string> nodesList;
     nodesList.reserve(adjacencyList.size()); 
 
-    for (const auto &entry : adjacencyList)
-    {
+    for (const auto &entry : adjacencyList) {
         nodesList.push_back(entry.first);
     }
 
     return nodesList;
 }
 
-const std::map<std::string, std::vector<std::string>> &Graph::getAdjacencyList() const
-{
+const std::map<std::string, std::vector<std::string>> &Graph::getAdjacencyList() const {
     return adjacencyList;
 }
 
-std::vector<Edge> Graph::getEdges() const
-{
+std::vector<Edge> Graph::getEdges() const {
     std::vector<Edge> edges;
 
-    for (const auto &[from, neighbors] : adjacencyList)
-    {
-        for (const auto &to : neighbors)
-        {
+    for (const auto &[from, neighbors] : adjacencyList) {
+        for (const auto &to : neighbors) {
             edges.push_back({from, to});
         }
     }
@@ -47,14 +39,13 @@ std::vector<Edge> Graph::getEdges() const
     return edges;
 }
 
-void Graph::print() const
-{
-    for (const auto &entry : adjacencyList)
-    {
+void Graph::print() const {
+    for (const auto &entry : adjacencyList) {
         std::cout << entry.first << " : ";
 
-        for (const auto &neighbor : entry.second)
+        for (const auto &neighbor : entry.second) {
             std::cout << neighbor << " ";
+        }
 
         std::cout << '\n';
     }
