@@ -30,3 +30,10 @@ add_custom_command(
 
 add_custom_target(copy_netlist ALL DEPENDS ${NETLIST_OUTPUT})
 add_dependencies(NetlistPlacementRoutingSimulator copy_netlist)
+
+option(BUILD_TESTING "Build unit tests in unit_tests/" ON)
+
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(unit_tests)
+endif()
